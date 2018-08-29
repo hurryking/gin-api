@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -51,6 +52,24 @@ func main() {
 		})
 		fmt.Printf("ids: %v; names: %v", ids, names)
 	})
+	r.POST("/upload", func(c *gin.Context) {
+		file, _ := c.FormFile("file")
+		log.Println(file.Filename)
+		dst := "/home/ningjin/" + file.Filename
+		c.SaveUploadedFile(file, dst)
+		c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+	})
+
+	v1 := r.Group("v1")
+	{
+		v1.POST("/login", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"status":  "200",
+				"message": "login",
+			})
+		})
+	}
+
 	r.Run()
 }
 
