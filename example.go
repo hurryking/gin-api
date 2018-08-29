@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -30,6 +31,25 @@ func main() {
 		firstname := c.DefaultQuery("firstname", "Guest")
 		lastname := c.Query("lastname")
 		c.String(http.StatusOK, "Hello %s %s", firstname, lastname)
+	})
+	r.POST("/form_post", func(c *gin.Context) {
+		message := c.PostForm("message")
+		nick := c.DefaultPostForm("nick", "anonymous")
+		c.JSON(200, gin.H{
+			"status":  "posted",
+			"message": message,
+			"nick":    nick,
+		})
+	})
+	r.POST("/post", func(c *gin.Context) {
+		ids := c.QueryMap("ids")
+		names := c.PostFormMap("message")
+
+		c.JSON(200, gin.H{
+			"status":  "posted",
+			"message": names,
+		})
+		fmt.Printf("ids: %v; names: %v", ids, names)
 	})
 	r.Run()
 }
